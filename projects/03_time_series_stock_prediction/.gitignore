@@ -1,0 +1,107 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment Variables
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite3
+*.sql
+
+# Models
+models/*.pth
+models/*.h5
+models/*.pkl
+*.ckpt
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Docker
+docker-compose.override.yml
+
+# Node (if using npm for any tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Cache
+.cache/
+*.cache
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.crt
+
+# Backup files
+*.bak
+*.backup
+backup_*
+
+# Data files (large datasets)
+data/*.csv
+data/*.parquet
+data/*.json
+!data/sample_*.csv
+
+# Monitoring
+prometheus_data/
+grafana_data/
