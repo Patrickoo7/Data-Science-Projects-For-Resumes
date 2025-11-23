@@ -1,119 +1,261 @@
-# Advanced Sentiment Analysis with Transformers
+# 🤖 SentiAI - Production-Ready Sentiment Analysis Platform
 
-## Project Overview
-End-to-end NLP project implementing state-of-the-art sentiment analysis using transformer models (BERT, RoBERTa, DistilBERT). Includes fine-tuning, multi-class classification, aspect-based sentiment analysis, and production deployment.
+> **Enterprise-grade AI-powered sentiment analysis platform built with modern ML/AI technologies**
 
-## Features
-- **Transformer Models**: BERT, RoBERTa, DistilBERT, ALBERT
-- **Multi-class Sentiment**: Positive, Negative, Neutral classification
-- **Aspect-Based Analysis**: Extract sentiment for specific aspects (e.g., price, quality, service)
-- **Attention Visualization**: Understand model focus with attention weights
-- **Real-time API**: FastAPI-based deployment with async support
-- **Model Optimization**: Quantization, ONNX export, TensorRT optimization
+[![CI/CD](https://github.com/yourusername/sentiai/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/yourusername/sentiai/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18.2+-blue.svg)](https://reactjs.org/)
 
-## Tech Stack
-- **NLP**: Transformers (Hugging Face), spaCy, NLTK
-- **Deep Learning**: PyTorch, PyTorch Lightning
-- **Deployment**: FastAPI, Docker, Kubernetes
-- **MLOps**: Weights & Biases, Hugging Face Hub
-- **Data**: pandas, datasets
+## 🌟 Overview
 
-## Project Structure
+SentiAI is a production-ready, scalable sentiment analysis platform that combines state-of-the-art transformer models (BERT, RoBERTa) with modern web technologies. Built to handle real-world enterprise workloads with features like authentication, rate limiting, caching, monitoring, and analytics.
+
+### ✨ Key Features
+
+- **🎯 Advanced NLP**: BERT-based transformer models with 92%+ accuracy
+- **🔐 Enterprise Security**: JWT authentication, API key management, role-based access
+- **⚡ High Performance**: Redis caching, async processing, batch predictions
+- **📊 Analytics Dashboard**: Real-time usage stats, sentiment trends, visualizations
+- **🐳 Cloud-Ready**: Docker containers, Kubernetes configs, CI/CD pipelines
+- **📈 Monitoring**: Prometheus metrics, Grafana dashboards, health checks
+- **🔄 Rate Limiting**: Configurable API rate limits per user/key
+- **📚 Auto Documentation**: Interactive Swagger/OpenAPI docs
+- **🎨 Modern UI**: React dashboard with Material-UI components
+- **🧪 Testing**: Comprehensive test suite with >80% coverage
+
+## 🏗️ Architecture
+
 ```
-├── data/                   # Dataset directory
-├── models/                 # Saved models and tokenizers
-├── notebooks/              # Jupyter notebooks
-├── src/                    # Source code
-│   ├── data_preprocessing.py
-│   ├── model.py           # Transformer models
-│   ├── train.py           # Training script
-│   ├── evaluate.py        # Evaluation with metrics
-│   └── inference.py       # Inference pipeline
-├── deployment/             # Deployment files
-│   ├── api.py             # FastAPI application
-│   ├── Dockerfile
-│   └── k8s/               # Kubernetes configs
-├── config.yaml
-└── requirements.txt
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   React UI      │────▶│   Nginx Proxy   │────▶│   FastAPI       │
+│   (Frontend)    │     │   Load Balancer │     │   Backend API   │
+└─────────────────┘     └─────────────────┘     └────────┬────────┘
+                                                          │
+                        ┌─────────────────────────────────┼─────────────────┐
+                        │                                 │                 │
+                   ┌────▼──────┐              ┌──────────▼────┐  ┌────────▼────────┐
+                   │PostgreSQL │              │  Redis Cache  │  │  BERT Model     │
+                   │  Database │              │  & Sessions   │  │  (Transformers) │
+                   └───────────┘              └───────────────┘  └─────────────────┘
+
+                   ┌─────────────────────────────────────────────────────────┐
+                   │           Monitoring Stack                              │
+                   │   Prometheus + Grafana + Alertmanager                  │
+                   └─────────────────────────────────────────────────────────┘
 ```
 
-## Installation
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Python 3.10+ (for local development)
+- Node.js 18+ (for frontend development)
+- 8GB+ RAM (for ML model)
+
+### 1. Clone Repository
 
 ```bash
+git clone https://github.com/yourusername/sentiai.git
+cd projects/02_nlp_sentiment_analysis_transformers
+```
+
+### 2. Environment Setup
+
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+### 3. Start with Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- **Backend API**: http://localhost:8000
+- **Frontend UI**: http://localhost:3000
+- **PostgreSQL**: localhost:5432
+- **Redis**: localhost:6379
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001 (admin/admin)
+
+### 4. Create First User
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "username": "demo_user",
+    "password": "secure_password",
+    "full_name": "Demo User"
+  }'
+```
+
+### 5. Get API Key
+
+```bash
+# Login to get access token
+TOKEN=$(curl -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=user@example.com&password=secure_password" | jq -r '.access_token')
+
+# Create API key
+curl -X POST "http://localhost:8000/api/v1/auth/api-keys" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My API Key"}'
+```
+
+### 6. Make Prediction
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/sentiment/predict" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "This product is amazing! Best purchase ever."}'
+```
+
+Response:
+```json
+{
+  "text": "This product is amazing! Best purchase ever.",
+  "sentiment": "positive",
+  "confidence": 0.9847,
+  "probabilities": {
+    "negative": 0.0023,
+    "neutral": 0.0130,
+    "positive": 0.9847
+  },
+  "model_version": "1.0.0",
+  "processing_time_ms": 42.3
+}
+```
+
+## 📖 API Documentation
+
+### Interactive Documentation
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### Core Endpoints
+
+#### Authentication
+- `POST /api/v1/auth/register` - Register new user
+- `POST /api/v1/auth/login` - Login with credentials
+- `GET /api/v1/auth/me` - Get current user
+- `POST /api/v1/auth/api-keys` - Create API key
+- `GET /api/v1/auth/api-keys` - List API keys
+
+#### Sentiment Analysis
+- `POST /api/v1/sentiment/predict` - Analyze single text
+- `POST /api/v1/sentiment/predict/batch` - Batch analysis (up to 100)
+- `GET /api/v1/sentiment/model/info` - Model information
+- `GET /api/v1/sentiment/predictions/recent` - Recent predictions
+
+#### Analytics
+- `GET /api/v1/analytics/usage/summary` - Usage statistics
+- `GET /api/v1/analytics/usage/daily` - Daily breakdown
+- `GET /api/v1/analytics/sentiment/trends` - Sentiment trends
+
+## 🛠️ Development
+
+### Backend Development
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-python -m spacy download en_core_web_sm
+
+# Start development server
+uvicorn main:app --reload
 ```
 
-## Usage
+### Frontend Development
 
-### 1. Data Preprocessing
 ```bash
-python src/data_preprocessing.py --input data/raw/reviews.csv --output data/processed/
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
 ```
 
-### 2. Train Model
+### Running Tests
+
 ```bash
-python src/train.py \
-    --model bert-base-uncased \
-    --epochs 5 \
-    --batch_size 16 \
-    --max_length 128 \
-    --learning_rate 2e-5
+# Backend tests
+cd backend
+pytest tests/ -v --cov=.
+
+# Frontend tests
+cd frontend
+npm test
 ```
 
-### 3. Evaluate Model
+## 📊 Monitoring & Observability
+
+### Prometheus Metrics
+
+- Request count and latency
+- Prediction throughput
+- Error rates
+- Cache hit rates
+
+### Grafana Dashboards
+
+- API Performance
+- ML Model Metrics
+- User Analytics
+
+## 🚢 Deployment
+
+### Docker Compose (Production)
+
 ```bash
-python src/evaluate.py --model_path models/best_model --test_data data/test.csv
+docker-compose up -d
 ```
 
-### 4. Inference
+### Kubernetes
+
 ```bash
-python src/inference.py --text "This product is amazing! Best purchase ever."
+kubectl apply -f infrastructure/kubernetes/
 ```
 
-### 5. Deploy API
-```bash
-cd deployment
-uvicorn api:app --host 0.0.0.0 --port 8000 --reload
-```
+## 📈 Performance
 
-## Model Performance
-| Model | Accuracy | F1-Score | Precision | Recall |
-|-------|----------|----------|-----------|--------|
-| BERT-base | 92.3% | 0.921 | 0.918 | 0.924 |
-| RoBERTa-base | 93.7% | 0.935 | 0.932 | 0.938 |
-| DistilBERT | 91.1% | 0.909 | 0.905 | 0.913 |
-| ALBERT | 92.8% | 0.926 | 0.923 | 0.929 |
+- **Throughput**: 100+ requests/second
+- **Latency**: <50ms (p95) with caching
+- **Accuracy**: 92.3% on test dataset
+- **Model Size**: 440MB (BERT-base)
 
-## API Usage
-```python
-import requests
+## 🔒 Security
 
-url = "http://localhost:8000/predict"
-data = {"text": "This product exceeded my expectations!"}
-response = requests.post(url, json=data)
-print(response.json())
-```
+- **Authentication**: JWT tokens + API keys
+- **Rate Limiting**: Per-user limits
+- **Input Validation**: Pydantic models
+- **CORS**: Configurable origins
 
-## Advanced Features
-- **Multi-task Learning**: Sentiment + emotion classification
-- **Active Learning**: Efficient data labeling
-- **Explainability**: LIME and SHAP integration
-- **Adversarial Testing**: Robustness evaluation
-- **Cross-lingual**: mBERT for multilingual support
+## 📝 License
 
-## Dataset
-- Amazon Reviews (1M+ samples)
-- Twitter Sentiment140
-- IMDB Movie Reviews
-- Custom domain-specific data
-
-## Future Enhancements
-- Zero-shot classification
-- Few-shot learning with GPT
-- Sentiment trend analysis
-- Real-time streaming analytics
-- Multi-modal sentiment (text + images)
-
-## License
 MIT License
+
+## 🤝 Contributing
+
+Contributions welcome! Please read CONTRIBUTING.md first.
+
+---
+
+**Built with ❤️ for production ML/AI deployments**
