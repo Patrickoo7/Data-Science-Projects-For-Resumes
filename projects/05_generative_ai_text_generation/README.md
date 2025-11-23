@@ -1,147 +1,132 @@
-# Advanced Text Generation with GPT and Fine-tuning
+# 🤖 GenText - Production LLM & Text Generation Platform
 
-## Project Overview
-Production-ready generative AI project implementing GPT-based text generation with custom fine-tuning, prompt engineering, and multiple generation strategies. Includes chat interfaces, creative writing, code generation, and domain-specific applications.
+> **Enterprise-grade generative AI platform with GPT, LoRA fine-tuning, and RAG**
 
-## Features
-- **GPT Fine-tuning**: Fine-tune GPT-2, GPT-Neo, LLaMA models
-- **Multiple Generation Strategies**: Greedy, beam search, top-k, nucleus sampling
-- **Prompt Engineering**: Template-based, few-shot, chain-of-thought
-- **LoRA/QLoRA**: Parameter-efficient fine-tuning
-- **RLHF**: Reinforcement Learning from Human Feedback
-- **RAG**: Retrieval-Augmented Generation
-- **Chat Interface**: Interactive conversational AI
-- **Multi-modal**: Text + image generation integration
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
 
-## Tech Stack
-- **LLMs**: Transformers, PEFT, TRL, bitsandbytes
-- **Models**: GPT-2, GPT-Neo, LLaMA, Mistral, Falcon
-- **Training**: PyTorch, DeepSpeed, Accelerate
-- **Vector DB**: FAISS, ChromaDB, Pinecone
-- **Serving**: vLLM, Text Generation Inference
-- **UI**: Gradio, Streamlit, Chainlit
+## 🌟 Overview
 
-## Project Structure
+GenText is a production-ready platform for large language model deployment and fine-tuning. Features GPT-2, LLaMA, and Mistral models with LoRA/QLoRA efficiency, RAG pipelines, and multiple generation strategies for enterprise applications.
+
+### ✨ Key Features
+
+- **🎯 Multiple LLMs**: GPT-2, GPT-Neo, LLaMA-2, Mistral
+- **⚡ Efficient Fine-tuning**: LoRA, QLoRA (4-bit), PEFT
+- **📊 Generation Strategies**: Greedy, beam search, top-k, nucleus
+- **🔄 RAG Pipeline**: Retrieval-Augmented Generation
+- **🐳 Production Ready**: vLLM inference, Docker deployment
+- **📈 Prompt Engineering**: Few-shot, chain-of-thought
+- **🎨 Interactive UI**: Gradio dashboard
+- **🔒 Safety**: Content filtering, toxicity detection
+
+## 🏗️ Architecture
+
 ```
-├── data/                   # Training datasets
-├── models/                 # Fine-tuned models
-├── notebooks/              # Experiments
-├── src/                    # Source code
-│   ├── data_preparation.py
-│   ├── fine_tune.py       # Full fine-tuning
-│   ├── lora_train.py      # LoRA fine-tuning
-│   ├── inference.py       # Text generation
-│   ├── prompt_templates.py
-│   ├── rag_pipeline.py    # RAG implementation
-│   └── evaluation.py      # Perplexity, BLEU, ROUGE
-├── app/                    # Web application
-│   ├── gradio_app.py
-│   └── api.py
-├── config.yaml
-└── requirements.txt
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Gradio UI  │────▶│   FastAPI    │────▶│  GPT/LLaMA   │
+│  (Chat)      │     │   Backend    │     │    Model     │
+└──────────────┘     └──────┬───────┘     └──────┬───────┘
+                            │                     │
+                     ┌──────┴──────┬──────────────┼────────┐
+                     │             │              │        │
+                ┌────▼────┐  ┌────▼────┐  ┌─────▼──┐ ┌───▼────┐
+                │ Vector  │  │ Redis   │  │ LoRA   │ │ vLLM   │
+                │   DB    │  │  Cache  │  │Adapters│ │ Server │
+                └─────────┘  └─────────┘  └────────┘ └────────┘
 ```
 
-## Installation
+## 🚀 Quick Start
+
+### Standard Fine-tuning
 
 ```bash
-pip install -r requirements.txt
-
-# For flash attention (optional, faster inference)
-pip install flash-attn --no-build-isolation
-```
-
-## Usage
-
-### 1. Data Preparation
-```bash
-python src/data_preparation.py \
-    --input data/raw/text_corpus.txt \
-    --output data/processed/ \
-    --max_length 512
-```
-
-### 2. Fine-tune Model (Full)
-```bash
+# Full model fine-tuning
 python src/fine_tune.py \
-    --model gpt2-medium \
-    --dataset data/processed/train.jsonl \
-    --epochs 3 \
-    --batch_size 8 \
-    --lr 5e-5
+  --model gpt2-medium \
+  --dataset data/train.jsonl \
+  --epochs 3 \
+  --batch_size 8
 ```
 
-### 3. Fine-tune with LoRA (Efficient)
+### LoRA Fine-tuning (Recommended)
+
 ```bash
+# Parameter-efficient fine-tuning
 python src/lora_train.py \
-    --model meta-llama/Llama-2-7b-hf \
-    --dataset data/processed/train.jsonl \
-    --lora_r 8 \
-    --lora_alpha 32 \
-    --epochs 3
+  --model meta-llama/Llama-2-7b-hf \
+  --dataset data/train.jsonl \
+  --lora_r 8 \
+  --lora_alpha 32 \
+  --load_in_4bit
 ```
 
-### 4. Generate Text
+### Text Generation
+
 ```bash
+# Generate text
 python src/inference.py \
-    --model models/fine_tuned_gpt2 \
-    --prompt "Once upon a time" \
-    --max_length 200 \
-    --temperature 0.8 \
-    --top_p 0.9
+  --model models/fine_tuned_gpt2 \
+  --prompt "Once upon a time" \
+  --max_length 200 \
+  --temperature 0.8
 ```
 
-### 5. RAG Pipeline
+### RAG Pipeline
+
 ```bash
+# Retrieval-Augmented Generation
 python src/rag_pipeline.py \
-    --query "What is machine learning?" \
-    --knowledge_base data/documents/ \
-    --top_k 5
+  --query "What is machine learning?" \
+  --knowledge_base data/documents/ \
+  --top_k 5
 ```
 
-### 6. Launch Web App
-```bash
-python app/gradio_app.py
-```
+## 📖 API Usage
 
-## Model Architectures
+### Text Generation
 
-### GPT-2 Fine-tuning
-- Base model: 124M parameters
-- Medium model: 355M parameters
-- Large model: 774M parameters
-- Fine-tuning: Domain-specific corpus
-
-### LoRA Configuration
 ```python
-lora_config = {
-    "r": 8,              # Rank
-    "lora_alpha": 32,    # Scaling factor
-    "target_modules": ["q_proj", "v_proj"],
-    "lora_dropout": 0.1
-}
+import requests
+
+response = requests.post(
+    "http://localhost:8000/api/v1/generate",
+    json={
+        "prompt": "Explain quantum computing",
+        "max_length": 150,
+        "temperature": 0.7,
+        "top_p": 0.9
+    }
+)
+
+print(response.json()['generated_text'])
 ```
 
-### QLoRA (4-bit Quantization)
-- Reduces memory by 75%
-- Enables fine-tuning on consumer GPUs
-- Minimal performance degradation
+### Chat Completion
 
-## Generation Strategies
+```python
+response = requests.post(
+    "http://localhost:8000/api/v1/chat",
+    json={
+        "messages": [
+            {"role": "user", "content": "What is AI?"}
+        ]
+    }
+)
+```
+
+## 🛠️ Generation Strategies
 
 ### 1. Greedy Decoding
 ```python
-output = model.generate(
-    input_ids,
-    max_length=100,
-    do_sample=False
-)
+output = model.generate(input_ids, do_sample=False)
 ```
 
 ### 2. Beam Search
 ```python
 output = model.generate(
     input_ids,
-    max_length=100,
     num_beams=5,
     early_stopping=True
 )
@@ -151,7 +136,6 @@ output = model.generate(
 ```python
 output = model.generate(
     input_ids,
-    max_length=100,
     do_sample=True,
     top_k=50,
     temperature=0.7
@@ -162,56 +146,13 @@ output = model.generate(
 ```python
 output = model.generate(
     input_ids,
-    max_length=100,
     do_sample=True,
     top_p=0.9,
     temperature=0.8
 )
 ```
 
-## Applications
-
-### 1. Creative Writing
-- Story generation
-- Poetry creation
-- Script writing
-
-### 2. Code Generation
-- Function completion
-- Code explanation
-- Bug fixing
-
-### 3. Conversational AI
-- Customer support chatbot
-- Personal assistant
-- Educational tutor
-
-### 4. Content Creation
-- Blog post generation
-- Product descriptions
-- Social media posts
-
-### 5. Domain-Specific
-- Legal document drafting
-- Medical report summarization
-- Scientific paper writing
-
-## Evaluation Metrics
-
-### Automatic Metrics
-- **Perplexity**: Lower is better
-- **BLEU**: Text similarity (0-1)
-- **ROUGE**: Summarization quality
-- **METEOR**: Machine translation
-- **BERTScore**: Semantic similarity
-
-### Human Evaluation
-- Fluency (1-5)
-- Coherence (1-5)
-- Relevance (1-5)
-- Creativity (1-5)
-
-## Performance Results
+## 📊 Model Performance
 
 | Model | Perplexity | BLEU | Training Time | Memory |
 |-------|-----------|------|---------------|--------|
@@ -220,102 +161,134 @@ output = model.generate(
 | GPT-2 + LoRA | 19.2 | 0.49 | 3h | 12GB |
 | LLaMA-7B + QLoRA | 12.4 | 0.68 | 8h | 24GB |
 
-## Prompt Engineering Examples
+## 🎯 Use Cases
 
-### Few-shot Learning
-```
-Example 1:
-Input: "The weather is sunny"
-Sentiment: Positive
-
-Example 2:
-Input: "I'm feeling sad today"
-Sentiment: Negative
-
-Example 3:
-Input: "This movie was amazing!"
-Sentiment: [GENERATE]
+### 1. Creative Writing
+```bash
+python src/inference.py \
+  --prompt "Write a sci-fi story about" \
+  --max_length 500
 ```
 
-### Chain-of-Thought
-```
-Question: If John has 5 apples and gives 2 to Mary, how many does he have?
-Let's think step by step:
-1. John starts with 5 apples
-2. He gives away 2 apples
-3. 5 - 2 = 3
-Answer: 3 apples
+### 2. Code Generation
+```bash
+python src/inference.py \
+  --prompt "def fibonacci(n):" \
+  --max_length 150
 ```
 
-## RAG Pipeline
+### 3. Question Answering
+```bash
+python src/rag_pipeline.py \
+  --query "How does LSTM work?" \
+  --knowledge_base docs/
+```
 
-1. **Document Ingestion**: Load and chunk documents
-2. **Embedding**: Convert text to vectors
-3. **Indexing**: Store in vector database
-4. **Retrieval**: Find relevant documents
-5. **Generation**: Generate answer with context
+### 4. Summarization
+```bash
+python src/inference.py \
+  --task summarization \
+  --input article.txt
+```
 
-## Advanced Features
+## 🔧 LoRA Configuration
 
-### 1. Quantization
-- 8-bit: bitsandbytes
-- 4-bit: QLoRA
-- Dynamic quantization
+```python
+lora_config = {
+    "r": 8,              # Rank
+    "lora_alpha": 32,    # Scaling
+    "target_modules": ["q_proj", "v_proj"],
+    "lora_dropout": 0.1,
+    "bias": "none"
+}
+```
 
-### 2. Distributed Training
-- DeepSpeed ZeRO
-- FSDP (Fully Sharded Data Parallel)
-- Model parallelism
+Benefits:
+- **75% less memory**
+- **3x faster training**
+- **Mergeable adapters**
+- **Multi-task learning**
 
-### 3. Optimization
-- Flash Attention 2
-- Gradient checkpointing
-- Mixed precision training
+## 📈 RAG Pipeline
 
-### 4. Deployment
-- vLLM for fast inference
-- ONNX export
-- TensorRT optimization
+```python
+# Document ingestion
+from langchain import FAISS, OpenAIEmbeddings
 
-## Datasets
-- OpenWebText
-- The Pile
-- C4 (Colossal Clean Crawled Corpus)
-- BookCorpus
-- Wikipedia
-- Custom domain data
+# Load documents
+docs = load_documents("./knowledge_base")
 
-## Safety & Ethics
+# Create embeddings
+embeddings = OpenAIEmbeddings()
+vectorstore = FAISS.from_documents(docs, embeddings)
+
+# Query with retrieval
+relevant_docs = vectorstore.similarity_search(query, k=5)
+context = "\n".join([doc.page_content for doc in relevant_docs])
+
+# Generate with context
+prompt = f"Context: {context}\n\nQuestion: {query}\n\nAnswer:"
+answer = model.generate(prompt)
+```
+
+## 🚢 Deployment
+
+### Docker
+
+```bash
+docker-compose up -d
+
+# Access Gradio UI
+http://localhost:7860
+
+# Access API
+http://localhost:8000/docs
+```
+
+### vLLM (High Performance)
+
+```bash
+# Install vLLM
+pip install vllm
+
+# Start server
+python -m vllm.entrypoints.api_server \
+  --model meta-llama/Llama-2-7b-hf \
+  --tensor-parallel-size 2
+```
+
+## 🔒 Safety & Ethics
+
 - Content filtering
-- Toxicity detection
+- Toxicity detection (Perspective API)
 - Bias mitigation
 - Factual accuracy checks
 - Attribution and citations
 
-## Future Enhancements
-- Multi-lingual support
-- Voice integration (TTS/STT)
-- Multi-modal generation (text + image)
-- Personalization and memory
-- Agent-based interactions
-- Tool use and function calling
+## 🧪 Evaluation Metrics
 
-## References
-- Attention is All You Need (Vaswani et al., 2017)
-- GPT-2 (Radford et al., 2019)
-- LoRA (Hu et al., 2021)
-- QLoRA (Dettmers et al., 2023)
-- RAG (Lewis et al., 2020)
+- **Perplexity**: Model confidence
+- **BLEU**: Translation quality
+- **ROUGE**: Summarization quality
+- **BERTScore**: Semantic similarity
+- **Human Evaluation**: Fluency, coherence, relevance
 
-## License
+## 📚 Documentation
+
+- [Fine-tuning Guide](./docs/fine-tuning.md)
+- [LoRA Tutorial](./docs/lora.md)
+- [RAG Implementation](./docs/rag.md)
+- [Prompt Engineering](./docs/prompts.md)
+- [API Reference](http://localhost:8000/docs)
+
+## 🤝 Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## 📝 License
+
 MIT License
 
-## Citation
-```bibtex
-@software{generative_ai_text_generation,
-  title={Advanced Text Generation with GPT and Fine-tuning},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/repo}
-}
-```
+---
+
+**Built with ❤️ for production LLM deployments and generative AI applications**
